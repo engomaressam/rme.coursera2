@@ -2,6 +2,7 @@
 *.json
 *.pkl
 *.p
+*.pickle
 *.zip
 *.gz
 
