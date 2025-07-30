@@ -1,0 +1,33 @@
+# Re-initialize the model to train from scratch
+model = LogisticRegressionModel(input_dim)
+
+# 1. Set Up the Optimizer with L2 Regularization
+optimizer = optim.SGD(model.parameters(), lr=0.01, weight_decay=0.01)
+
+# 2. Train the Model with L2 Regularization
+epochs = 1000
+for epoch in range(epochs):
+    model.train()
+    optimizer.zero_grad()
+    outputs = model(X_train)
+    loss = criterion(outputs, y_train)
+    loss.backward()
+    optimizer.step()
+    
+    if (epoch + 1) % 100 == 0:
+        print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}')
+
+# 3. Evaluate the Optimized Model
+model.eval()
+with torch.no_grad():
+    y_pred_train = model(X_train)
+    predicted_train = (y_pred_train > 0.5).float()
+    train_accuracy_l2 = (predicted_train == y_train).float().mean()
+    
+    y_pred_test = model(X_test)
+    predicted_test = (y_pred_test > 0.5).float()
+    test_accuracy_l2 = (predicted_test == y_test).float().mean()
+
+# 4. Calculate and Print the Accuracy
+print(f'Training Accuracy with L2 Regularization: {train_accuracy_l2:.4f}')
+print(f'Test Accuracy with L2 Regularization: {test_accuracy_l2:.4f}')

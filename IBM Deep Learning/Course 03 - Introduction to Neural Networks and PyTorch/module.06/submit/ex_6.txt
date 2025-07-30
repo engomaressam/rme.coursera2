@@ -1,0 +1,24 @@
+# Define a path to save the model
+MODEL_PATH = 'lol_logistic_regression.pth'
+
+# 1. Save the model's state dictionary
+torch.save(model.state_dict(), MODEL_PATH)
+print(f"Model saved to {MODEL_PATH}")
+
+# 2. Load the model
+# Create a new instance of the model
+loaded_model = LogisticRegressionModel(input_dim)
+# Load the saved state dictionary
+loaded_model.load_state_dict(torch.load(MODEL_PATH))
+print("Model loaded successfully.")
+
+# 3. Ensure the loaded model is in evaluation mode
+loaded_model.eval()
+
+# 4. Evaluate the loaded model
+with torch.no_grad():
+    y_pred_loaded = loaded_model(X_test)
+    predicted_loaded = (y_pred_loaded > 0.5).float()
+    loaded_accuracy = (predicted_loaded == y_test).float().mean()
+
+print(f'Loaded Model Test Accuracy: {loaded_accuracy:.4f}')

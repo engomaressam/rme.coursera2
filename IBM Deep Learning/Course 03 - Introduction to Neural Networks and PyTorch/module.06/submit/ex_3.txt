@@ -1,0 +1,35 @@
+# 1. Set Number of Epochs
+epochs = 1000
+
+# 2. Training Loop
+for epoch in range(epochs):
+    model.train()
+    optimizer.zero_grad()
+    
+    # Forward pass
+    outputs = model(X_train)
+    loss = criterion(outputs, y_train)
+    
+    # Backward and optimize
+    loss.backward()
+    optimizer.step()
+    
+    # 3. Print Loss Every 100 Epochs
+    if (epoch + 1) % 100 == 0:
+        print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}')
+
+# 4. Model Evaluation
+model.eval()
+with torch.no_grad():
+    # 5. Get predictions and calculate accuracy
+    y_pred_train = model(X_train)
+    predicted_train = (y_pred_train > 0.5).float()
+    train_accuracy = (predicted_train == y_train).float().mean()
+    
+    y_pred_test = model(X_test)
+    predicted_test = (y_pred_test > 0.5).float()
+    test_accuracy = (predicted_test == y_test).float().mean()
+
+# 6. Print Accuracy
+print(f'Training Accuracy: {train_accuracy:.4f}')
+print(f'Test Accuracy: {test_accuracy:.4f}')

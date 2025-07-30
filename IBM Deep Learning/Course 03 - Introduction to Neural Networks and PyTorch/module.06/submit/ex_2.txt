@@ -1,0 +1,20 @@
+import torch.nn as nn
+import torch.optim as optim
+
+# 1. Define the Logistic Regression Model
+class LogisticRegressionModel(nn.Module):
+    def __init__(self, input_dim):
+        super(LogisticRegressionModel, self).__init__()
+        self.linear = nn.Linear(input_dim, 1)
+    
+    def forward(self, x):
+        return torch.sigmoid(self.linear(x))
+
+# 2. Initialize the Model, Loss Function, and Optimizer
+input_dim = X_train.shape[1]
+model = LogisticRegressionModel(input_dim)
+criterion = nn.BCELoss()
+optimizer = optim.SGD(model.parameters(), lr=0.01)
+
+print("Model initialized:")
+print(model)

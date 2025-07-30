@@ -1,0 +1,33 @@
+# 1. Define Learning Rates
+learning_rates = [0.01, 0.05, 0.1]
+results = {}
+num_epochs_tuning = 100 # Using fewer epochs for faster tuning
+
+for lr in learning_rates:
+    print(f"\n--- Training with learning rate: {lr} ---")
+    
+    # 2. Reinitialize the Model for Each Learning Rate
+    model = LogisticRegressionModel(input_dim)
+    optimizer = optim.SGD(model.parameters(), lr=lr)
+    
+    # 3. Train the Model for Each Learning Rate
+    for epoch in range(num_epochs_tuning):
+        model.train()
+        optimizer.zero_grad()
+        outputs = model(X_train)
+        loss = criterion(outputs, y_train)
+        loss.backward()
+        optimizer.step()
+
+    # 4. Evaluate and Compare
+    model.eval()
+    with torch.no_grad():
+        y_pred_test = model(X_test)
+        predicted_test = (y_pred_test > 0.5).float()
+        test_accuracy = (predicted_test == y_test).float().mean()
+        results[lr] = test_accuracy
+        print(f"Test Accuracy with lr={lr}: {test_accuracy:.4f}")
+
+# Find and print the best learning rate
+best_lr = max(results, key=results.get)
+print(f"\nBest Learning Rate: {best_lr} with Test Accuracy: {results[best_lr]:.4f}")

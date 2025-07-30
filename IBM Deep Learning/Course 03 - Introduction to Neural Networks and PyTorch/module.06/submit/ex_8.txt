@@ -1,0 +1,39 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# It's best to use a well-trained model for feature importance.
+# Let's re-run the training with the best learning rate found
+best_lr = 0.1 # Assuming 0.1 was the best from the previous step, adjust if needed
+model = LogisticRegressionModel(input_dim)
+optimizer = optim.SGD(model.parameters(), lr=best_lr, weight_decay=0.01) # Using L2 regularization as well
+criterion = nn.BCELoss()
+
+# Re-train for 1000 epochs with best settings
+for epoch in range(1000):
+    model.train()
+    optimizer.zero_grad()
+    outputs = model(X_train)
+    loss = criterion(outputs, y_train)
+    loss.backward()
+    optimizer.step()
+
+# 1. Extract the weights of the linear layer
+weights = model.linear.weight.data.numpy().flatten()
+features = X.columns
+
+# 2. Create a DataFrame for feature importance
+feature_importance = pd.DataFrame({'Feature': features, 'Importance': weights})
+
+# 3. Sorting Feature Importance
+# Sort by the absolute value to see the magnitude of influence
+feature_importance['abs_importance'] = feature_importance['Importance'].abs()
+feature_importance = feature_importance.sort_values(by='abs_importance', ascending=True)
+
+# 4. Plotting Feature Importance
+plt.figure(figsize=(12, 10))
+plt.barh(feature_importance['Feature'], feature_importance['Importance'])
+plt.xlabel('Importance (Weight)')
+plt.ylabel('Features')
+plt.title('Feature Importance for Predicting Match Win')
+plt.grid(axis='x', linestyle='--', alpha=0.6)
+plt.show()
